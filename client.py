@@ -4,11 +4,28 @@ import requests
 BASE = "https://practice.fhsucyber.com"
 TOKEN = os.environ.get("PRACTICE_API_TOKEN")
 
+# Who am I?
+#print(requests.get(f"{BASE}/api/v1/me", headers=headers).json())
+#print()
 
 class PracticeHubClient:
     def __init__(self, base_url, token):
         self.base = base_url.rstrip("/")
         self.headers = {"Authorization": f"Bearer {token}"}
+
+    #Handle Errors
+    def _handle_error(self, resp):
+        detail = resp.json().get("detail", "Unknown error.")
+        if resp.status_code == 401:
+            print(f"Error: Invalid or missing API token. {detail}")
+        elif resp.status_code == 403:
+            print(f"Error: You can only edit or delete your own posts. {detail}")
+        elif resp.status_code == 404:
+            print(f"Error: Post not found. {detail}")
+        elif resp.status_code == 422:
+            print(f"Error: Invalid data. {detail}")
+        else:
+            resp.raise_for_status()            
 
     def create_post(self, title, body="", tags=None):
         resp = requests.post(f"{self.base}/api/v1/posts", headers=self.headers,
