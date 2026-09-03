@@ -27,6 +27,7 @@ class PracticeHubClient:
         else:
             resp.raise_for_status()            
 
+    #Create
     def create_post(self, title, body="", tags=None):
         resp = requests.post(f"{self.base}/api/v1/posts", headers=self.headers,
                              json={"title": title, "body": body, "tags": tags or []})
@@ -35,16 +36,31 @@ class PracticeHubClient:
                 return None
         return resp.json()
 
+    #Read(List)
     def list_posts(self, mine=False, tag=None):
         params = {"mine": mine}
         if tag:
             params["tag"] = tag
         resp = requests.get(f"{self.base}/api/v1/posts", headers=self.headers, params=params)
-        resp.raise_for_status()
+        if not resp.ok:
+            self._handle_error(resp)
+            return None
         return resp.json()
 
     # TODO (Mini Project 1): get_post, update_post, delete_post
 
+    #Read
+    def get_post(self, post_id):
+        resp = requests.get(
+            f"{self.base}/api/v1/posts/{post_id}",
+            headers=self.headers
+        )
+
+        if not resp.ok:
+            self._handle_error(resp)
+            return None
+
+        return resp.json()    
 
 if __name__ == "__main__":
     if not TOKEN:
@@ -60,9 +76,6 @@ if __name__ == "__main__":
 
     print(f"posts that are mine: {len(client.list_posts(mine=True))}")
 
-    #test create
-    invalid_post = client.create_post(
-    "",
-    body="This should fail because the title is empty."
-    )
-    print(f"Result: {invalid_post}")
+    #test read
+    missing_post = client.get_post(999)
+    print(f"Result: {missing_post}")
