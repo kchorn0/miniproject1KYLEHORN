@@ -110,15 +110,40 @@ if __name__ == "__main__":
 
     client = PracticeHubClient(BASE, TOKEN)
 
+    #List # posts
     everyone = client.list_posts()
-    print(f"posts on the hub: {len(everyone)}")
+    if everyone is None:
+        raise SystemExit
+    print(f"Posts on the hub: {len(everyone)}")
 
-    #new_post = client.create_post("Week 3 lab", body="My first created post.")
-    #print(f"created post {new_post['id']}: {new_post['title']}")
-
+    #Number posts that are mine
     print(f"posts that are mine: {len(client.list_posts(mine=True))}")
 
 
-    #test del functiona nd error handle
-    forbidden_delete = client.delete_post(3)
-    print(f"Delete result: {forbidden_delete}")
+    #Create a new "first" post
+    #new_post = client.create_post("Week 3 lab", body="My first created post.")
+    #print(f"created post {new_post['id']}: {new_post['title']}")
+
+    # Create
+    new_post = client.create_post(
+        "Mini Project 1",
+        body="Testing my CRUD API client.",
+        tags=["python", "api"]
+    )
+    print(f"Created post {new_post['id']}: {new_post['title']}")
+
+    # Read (Get)
+    post_id = new_post["id"]
+    post = client.get_post(post_id)
+    print(f"Read post {post['id']}: {post['title']}")
+
+    # Update
+    updated_post = client.update_post(
+        post_id,
+        title="Mini Project 1 - Updated"
+    )
+    print(f"Updated post {updated_post['id']}: {updated_post['title']}")
+
+    # Delete
+    client.delete_post(post_id)
+    print(f"Deleted post {post_id}")
