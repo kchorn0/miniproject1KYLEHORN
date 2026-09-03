@@ -30,7 +30,9 @@ class PracticeHubClient:
     def create_post(self, title, body="", tags=None):
         resp = requests.post(f"{self.base}/api/v1/posts", headers=self.headers,
                              json={"title": title, "body": body, "tags": tags or []})
-        resp.raise_for_status()
+        if not resp.ok:
+                self._handle_error(resp)
+                return None
         return resp.json()
 
     def list_posts(self, mine=False, tag=None):
@@ -53,7 +55,14 @@ if __name__ == "__main__":
     everyone = client.list_posts()
     print(f"posts on the hub: {len(everyone)}")
 
-    new_post = client.create_post("Week 3 lab", body="My first created post.")
-    print(f"created post {new_post['id']}: {new_post['title']}")
+    #new_post = client.create_post("Week 3 lab", body="My first created post.")
+    #print(f"created post {new_post['id']}: {new_post['title']}")
 
     print(f"posts that are mine: {len(client.list_posts(mine=True))}")
+
+    #test create
+    invalid_post = client.create_post(
+    "",
+    body="This should fail because the title is empty."
+    )
+    print(f"Result: {invalid_post}")
