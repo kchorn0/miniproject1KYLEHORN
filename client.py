@@ -60,7 +60,36 @@ class PracticeHubClient:
             self._handle_error(resp)
             return None
 
+        return resp.json()  
+
+    #Update
+    def update_post(self, post_id, title=None, body=None, tags=None):
+        data = {}
+
+        if title is not None:
+            data["title"] = title
+
+        if body is not None:
+            data["body"] = body
+
+        if tags is not None:
+            data["tags"] = tags
+
+        resp = requests.patch(
+            f"{self.base}/api/v1/posts/{post_id}",
+            headers=self.headers,
+            json=data
+        )
+        if not resp.ok:
+            self._handle_error(resp)
+            return None
+
         return resp.json()    
+
+
+
+
+      
 
 if __name__ == "__main__":
     if not TOKEN:
@@ -76,6 +105,9 @@ if __name__ == "__main__":
 
     print(f"posts that are mine: {len(client.list_posts(mine=True))}")
 
-    #test read
-    missing_post = client.get_post(999)
-    print(f"Result: {missing_post}")
+    #Test update function error handling
+    forbidden_post = client.update_post(
+    3,
+    title="Trying to edit someone else's post"
+    )
+    print(f"Result: {forbidden_post}")
