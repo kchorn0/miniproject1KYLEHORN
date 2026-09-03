@@ -84,7 +84,20 @@ class PracticeHubClient:
             self._handle_error(resp)
             return None
 
-        return resp.json()    
+        return resp.json()
+
+    #Delete
+    def delete_post(self, post_id):
+        resp = requests.delete(
+            f"{self.base}/api/v1/posts/{post_id}",
+            headers=self.headers
+        )
+
+        if not resp.ok:
+            self._handle_error(resp)
+            return False
+
+        return True 
 
 
 
@@ -105,9 +118,7 @@ if __name__ == "__main__":
 
     print(f"posts that are mine: {len(client.list_posts(mine=True))}")
 
-    #Test update function error handling
-    forbidden_post = client.update_post(
-    3,
-    title="Trying to edit someone else's post"
-    )
-    print(f"Result: {forbidden_post}")
+
+    #test del functiona nd error handle
+    forbidden_delete = client.delete_post(3)
+    print(f"Delete result: {forbidden_delete}")
