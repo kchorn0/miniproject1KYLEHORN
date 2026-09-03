@@ -18,7 +18,7 @@ class PracticeHubClient:
     # Runs when a new PracticeHubClient object is created
     def __init__(self, base_url, token):
         self.base = base_url.rstrip("/")
-        # Creates the Authorization header using the API token
+        # Creates the Authorization header using the API token Bearer
         self.headers = {"Authorization": f"Bearer {token}"}
 
     #Handle Errors
@@ -143,6 +143,7 @@ class PracticeHubClient:
       
 # Checks if this file is being run directly instead of being imported
 #Test CRUD ops
+# demo that runs the full create → read → update → delete cycle and prints what it does
 if __name__ == "__main__":
     # Checks if the API token was not found
     if not TOKEN:
